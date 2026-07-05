@@ -13,12 +13,12 @@ interface AppLayoutProps {
 export const AppLayout: React.FC<AppLayoutProps> = ({ title, children }) => {
   return (
     <AuthGuard>
-      <div className="flex min-h-screen text-text-primary bg-bg-primary overflow-hidden">
+      <div className="flex h-screen text-text-primary bg-bg-primary overflow-hidden">
         {/* Left Desktop Sidebar */}
         <Sidebar />
 
         {/* Right Content Panel */}
-        <div className="flex-1 flex flex-col min-h-screen overflow-y-auto pb-16 lg:pb-0">
+        <div className="flex-1 flex flex-col h-screen overflow-y-auto pb-16 lg:pb-0">
           {/* Top Bar Navigation */}
           <TopNav title={title} />
 
