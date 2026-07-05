@@ -130,13 +130,16 @@ export const CommunityPage: React.FC = () => {
     }
   };
 
-  const filteredResources = [...resources, ...aiResources].filter((res) => {
+  const filteredStatic = resources.filter((res) => {
     const matchesSearch =
       res.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       res.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCat = selectedCategory === 'all' || res.category === selectedCategory;
     return matchesSearch && matchesCat;
   });
+
+  const filteredAi = aiResources.filter(res => selectedCategory === 'all' || res.category === selectedCategory);
+  const displayResources = [...filteredStatic, ...filteredAi];
 
   return (
     <AppLayout title="Community & Legal Resources">
@@ -189,7 +192,27 @@ export const CommunityPage: React.FC = () => {
             </h2>
 
             <div className="flex flex-col gap-4">
-              {filteredResources.map((res, idx) => (
+              {isSearchingAI && (
+                <>
+                  {[1, 2].map((i) => (
+                    <Card variant="solid" hoverEffect={false} key={`skel-${i}`} className="p-5 border border-border flex flex-col gap-3 animate-pulse">
+                      <div className="flex justify-between items-start gap-4">
+                        <div className="h-4 bg-border rounded w-1/2"></div>
+                        <div className="h-5 bg-border rounded w-16"></div>
+                      </div>
+                      <div className="h-3 bg-border rounded w-full mt-2"></div>
+                      <div className="h-3 bg-border rounded w-4/5"></div>
+                      
+                      <div className="flex justify-between items-center mt-2 pt-3 border-t border-border/50">
+                        <div className="h-4 bg-border rounded w-24"></div>
+                        <div className="h-8 bg-border rounded w-24"></div>
+                      </div>
+                    </Card>
+                  ))}
+                </>
+              )}
+
+              {!isSearchingAI && displayResources.map((res, idx) => (
                 <Card variant="solid" hoverEffect={false} key={idx} className="p-5 border border-border flex flex-col gap-3">
                   <div className="flex justify-between items-start gap-4">
                     <h3 className="font-bold text-sm text-text-primary flex items-center gap-2">
