@@ -94,5 +94,55 @@ To support your claim, you should ensure:
       return 'Sorry, there was an issue connecting to the AI server. Please try again.';
     }
   },
+
+  async searchLegalResources(query: string): Promise<any[]> {
+    const client = getGeminiClient();
+
+    if (!client) {
+      await new Promise((r) => setTimeout(r, 1000));
+      return [
+        {
+          title: 'Mock AI Generated Portal',
+          category: 'portal',
+          description: `This is a mock AI result for "${query}" because the API key is not configured.`,
+          url: 'https://example.com',
+          isFree: true,
+          isAiGenerated: true,
+        },
+      ];
+    }
+
+    try {
+      const model = client.getGenerativeModel({ model: 'gemini-2.5-flash' });
+      const prompt = `
+        You are a legal assistant for Indian citizens. The user searched for: "${query}".
+        Return a JSON array of up to 3 relevant Indian government websites, NGOs, or helplines.
+        The JSON must be an array of objects matching this exact structure:
+        [
+          {
+            "title": "Name of the organization/portal",
+            "category": "legal_aid" | "helpline" | "portal" | "ngo",
+            "description": "Short 1-2 sentence description",
+            "url": "Valid https URL",
+            "phone": "Helpline number (optional)",
+            "isFree": true,
+            "isAiGenerated": true
+          }
+        ]
+        Respond ONLY with valid JSON. Do not include markdown code blocks.
+      `;
+
+      const result = await model.generateContent(prompt);
+      let text = result.response.text().trim();
+      if (text.startsWith('\`\`\`json')) text = text.replace(/^\`\`\`json/, '');
+      if (text.startsWith('\`\`\`')) text = text.replace(/^\`\`\`/, '');
+      if (text.endsWith('\`\`\`')) text = text.replace(/\`\`\`$/, '');
+      
+      return JSON.parse(text);
+    } catch (err) {
+      console.error('Gemini resource search failure:', err);
+      return [];
+    }
+  },
 };
 export default aiService;

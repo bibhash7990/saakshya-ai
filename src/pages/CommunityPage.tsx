@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Globe, Search, ThumbsUp, Phone, Info, Award } from 'lucide-react';
 import { useToast } from '@/hooks/useToast';
+import { aiService } from '@/services/ai.service';
+import { Loader } from '@/components/ui/Loader';
 
 interface LegalResource {
   title: string;
@@ -15,6 +17,7 @@ interface LegalResource {
   phone?: string;
   state?: string;
   isFree: boolean;
+  isAiGenerated?: boolean;
 }
 
 interface CaseStudy {
@@ -32,6 +35,9 @@ export const CommunityPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [upvotes, setUpvotes] = useState<Record<string, number>>({});
   const [voted, setVoted] = useState<Record<string, boolean>>({});
+  
+  const [aiResources, setAiResources] = useState<LegalResource[]>([]);
+  const [isSearchingAI, setIsSearchingAI] = useState(false);
 
   const toast = useToast();
 
@@ -106,7 +112,25 @@ export const CommunityPage: React.FC = () => {
     toast.success('Thank you for upvoting!');
   };
 
-  const filteredResources = resources.filter((res) => {
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      setAiResources([]);
+      return;
+    }
+    
+    setIsSearchingAI(true);
+    toast.info('Searching globally via AI...');
+    try {
+      const results = await aiService.searchLegalResources(searchQuery);
+      setAiResources(results);
+    } catch (err) {
+      toast.danger('Failed to fetch AI results');
+    } finally {
+      setIsSearchingAI(false);
+    }
+  };
+
+  const filteredResources = [...resources, ...aiResources].filter((res) => {
     const matchesSearch =
       res.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       res.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -126,14 +150,20 @@ export const CommunityPage: React.FC = () => {
 
         {/* Directory Search toolbar */}
         <div className="flex flex-col md:flex-row gap-4 items-center w-full">
-          <Input
-            type="text"
-            placeholder="Search resources (e.g. consumer, cyber cell...)"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            leftIcon={<Search className="w-4 h-4" />}
-            className="flex-1"
-          />
+          <div className="flex flex-1 items-center gap-2 w-full">
+            <Input
+              type="text"
+              placeholder="Search resources (e.g. consumer, cyber cell...)"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              leftIcon={<Search className="w-4 h-4" />}
+              className="flex-1"
+            />
+            <Button variant="primary" onClick={handleSearch} isLoading={isSearchingAI}>
+              Search
+            </Button>
+          </div>
 
           <div className="flex gap-2 w-full md:w-auto">
             {['all', 'portal', 'helpline', 'legal_aid'].map((cat) => (
@@ -162,7 +192,14 @@ export const CommunityPage: React.FC = () => {
               {filteredResources.map((res, idx) => (
                 <Card variant="solid" hoverEffect={false} key={idx} className="p-5 border border-border flex flex-col gap-3">
                   <div className="flex justify-between items-start gap-4">
-                    <h3 className="font-bold text-sm text-text-primary">{res.title}</h3>
+                    <h3 className="font-bold text-sm text-text-primary flex items-center gap-2">
+                      {res.title}
+                      {res.isAiGenerated && (
+                        <span className="text-[9px] bg-primary-500/10 text-primary-400 px-1.5 py-0.5 rounded border border-primary-500/20 uppercase tracking-wider">
+                          AI FOUND
+                        </span>
+                      )}
+                    </h3>
                     <Badge variant={res.category === 'portal' ? 'primary' : 'success'} size="sm">
                       {res.category.replace('_', ' ')}
                     </Badge>
