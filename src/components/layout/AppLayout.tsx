@@ -3,7 +3,6 @@ import { Sidebar } from './Sidebar';
 import { TopNav } from './TopNav';
 import { MobileNav } from './MobileNav';
 import { ToastContainer } from '../ui/Toast';
-import { AuthGuard } from '../auth/AuthGuard';
 
 interface AppLayoutProps {
   title?: string;
@@ -12,8 +11,7 @@ interface AppLayoutProps {
 
 export const AppLayout: React.FC<AppLayoutProps> = ({ title, children }) => {
   return (
-    <AuthGuard>
-      <div className="flex h-screen text-text-primary bg-bg-primary overflow-hidden">
+    <div className="flex h-screen text-text-primary bg-bg-primary overflow-hidden">
         {/* Left Desktop Sidebar */}
         <Sidebar />
 
@@ -31,10 +29,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ title, children }) => {
         {/* Mobile Bottom Navigation */}
         <MobileNav />
 
-        {/* System-wide active toast messages overlay */}
-        <ToastContainer />
-      </div>
-    </AuthGuard>
+      {/* System-wide active toast messages overlay */}
+      <ToastContainer />
+    </div>
   );
 };
 export default AppLayout;
