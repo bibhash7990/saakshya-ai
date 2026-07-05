@@ -7,12 +7,14 @@ interface EvidenceGalleryProps {
   evidenceList: Evidence[];
   onView: (ev: Evidence) => void;
   onDelete?: (id: string) => void;
+  onAddEvidence?: () => void;
 }
 
 export const EvidenceGallery: React.FC<EvidenceGalleryProps> = ({
   evidenceList,
   onView,
   onDelete,
+  onAddEvidence,
 }) => {
   if (evidenceList.length === 0) {
     return (
@@ -24,6 +26,14 @@ export const EvidenceGallery: React.FC<EvidenceGalleryProps> = ({
         <p className="text-[10px] text-text-secondary mt-1 max-w-xs leading-relaxed">
           Upload screenshots, photos, or record voice notes using the wizard tools to lock down your proofs.
         </p>
+        {onAddEvidence && (
+          <button
+            onClick={onAddEvidence}
+            className="mt-4 px-4 py-2 bg-primary-500 text-white rounded-md text-xs font-semibold hover:bg-primary-600 transition-colors"
+          >
+            Add Evidence
+          </button>
+        )}
       </div>
     );
   }

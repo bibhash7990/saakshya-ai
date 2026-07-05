@@ -37,11 +37,20 @@ export const authService = {
       async (event, session) => {
         if (session?.user) {
           // Fetch profile
-          const { data: profile } = await supabase
+          let { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', session.user.id)
-            .single();
+            .maybeSingle(); // Prevents 406 error if row doesn't exist
+
+          // Fallback if profile doesn't exist (e.g. users created before the SQL trigger)
+          if (!profile) {
+            profile = {
+              id: session.user.id,
+              full_name: session.user.user_metadata?.full_name || 'User',
+              language: 'en',
+            };
+          }
 
           setAuth(session.user, profile);
         } else {
@@ -55,7 +64,7 @@ export const authService = {
     };
   },
 
-  async signUpWithEmail(email: string, fullName: string) {
+  async signUpWithEmail(email: string, password: string, fullName: string) {
     if (!isSupabaseConfigured()) {
       // Simulate API lag
       await new Promise((r) => setTimeout(r, 800));
@@ -73,11 +82,9 @@ export const authService = {
       return { user: mockUser, profile: mockProfile, error: null };
     }
 
-    // Real Supabase Signup
-    // In production, we require signup flow with email verification or auto login
     const { data, error } = await supabase.auth.signUp({
       email,
-      password: 'TemporaryPassword123!', // Simple fallback for passless OTP flow if needed, or email auth
+      password,
       options: {
         data: {
           full_name: fullName,
@@ -96,7 +103,7 @@ export const authService = {
     return { user: data.user, profile, error: null };
   },
 
-  async signInWithEmail(email: string) {
+  async signInWithEmail(email: string, password: string) {
     if (!isSupabaseConfigured()) {
       await new Promise((r) => setTimeout(r, 800));
       // Auto register or login with mock
@@ -115,16 +122,13 @@ export const authService = {
       return { user: mockUser, error: null };
     }
 
-    // Standard email login using Magic Link for passwordless authentication
-    const { error } = await supabase.auth.signInWithOtp({
+    const { error, data } = await supabase.auth.signInWithPassword({
       email,
-      options: {
-        shouldCreateUser: true,
-      },
+      password,
     });
 
     if (error) return { user: null, error: error.message };
-    return { user: null, error: null, info: 'Check your email for login link' };
+    return { user: data.user, error: null, info: 'Successfully logged in' };
   },
 
   async signInWithGoogle() {

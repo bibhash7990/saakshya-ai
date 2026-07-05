@@ -72,8 +72,8 @@ To support your claim, you should ensure:
     }
 
     try {
-      // Use the gemini-1.5-flash or gemini-2.5-flash models
-      const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      // Use the gemini-2.5-flash model
+      const model = client.getGenerativeModel({ model: 'gemini-2.5-flash' });
       const prompt = `
         You are SaakshyaAI's Legal Rights Assistant. You help Indian citizens understand their legal rights in simple language.
         User Query: "${query}"

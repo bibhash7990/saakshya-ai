@@ -93,6 +93,7 @@ export const SignupPage: React.FC = () => {
           <div className="flex flex-col gap-4">
             <SignupForm onSuccess={() => navigate('/dashboard')} />
 
+            {/* Hiding Google Login for now
             <div className="relative flex items-center justify-center my-2 select-none">
               <div className="absolute w-full border-t border-border" />
               <span className="relative px-3 bg-bg-primary text-[10px] font-bold text-text-muted uppercase">
@@ -101,6 +102,7 @@ export const SignupPage: React.FC = () => {
             </div>
 
             <SocialLogin onClick={loginWithGoogle} loading={submitting} />
+            */}
           </div>
 
           <p className="text-xs text-center text-text-secondary mt-2">

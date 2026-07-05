@@ -6,10 +6,10 @@ export const useAuth = () => {
   const { user, profile, isAuthenticated, isLoading, error } = useAuthStore();
   const [submitting, setSubmitting] = useState(false);
 
-  const login = async (email: string) => {
+  const login = async (email: string, password?: string) => {
     setSubmitting(true);
     try {
-      const result = await authService.signInWithEmail(email);
+      const result = await authService.signInWithEmail(email, password || 'TemporaryPassword123!');
       setSubmitting(false);
       return result;
     } catch (err: any) {
@@ -18,10 +18,10 @@ export const useAuth = () => {
     }
   };
 
-  const register = async (email: string, fullName: string) => {
+  const register = async (email: string, fullName: string, password?: string) => {
     setSubmitting(true);
     try {
-      const result = await authService.signUpWithEmail(email, fullName);
+      const result = await authService.signUpWithEmail(email, password || 'TemporaryPassword123!', fullName);
       setSubmitting(false);
       return result;
     } catch (err: any) {

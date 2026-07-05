@@ -6,12 +6,13 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
-import { Mail } from 'lucide-react';
+import { Mail, Lock } from 'lucide-react';
 import { isSupabaseConfigured } from '@/services/supabase';
 
 // 1. Define Zod Schema
 const loginSchema = z.object({
   email: z.string().min(1, 'Email address is required').email('Please enter a valid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -35,16 +36,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
 
   // 3. Form Submit Handler
   const onSubmit = async (data: LoginFormData) => {
-    const result = await login(data.email);
+    const result = await login(data.email, data.password);
     if (result.error) {
       toast.danger(result.error);
     } else {
-      if (isSupabaseConfigured()) {
-        toast.success('Magic login link sent! Please check your inbox.');
-      } else {
-        toast.success('Successfully logged in (Demo Mode)!');
-        if (onSuccess) onSuccess();
-      }
+      toast.success('Successfully logged in!');
+      if (onSuccess) onSuccess();
     }
   };
 
@@ -59,8 +56,17 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
         leftIcon={<Mail className="w-4 h-4" />}
         disabled={submitting}
       />
+      <Input
+        type="password"
+        label="Password"
+        placeholder="••••••••"
+        {...register('password')}
+        error={errors.password?.message}
+        leftIcon={<Lock className="w-4 h-4" />}
+        disabled={submitting}
+      />
       <Button type="submit" loading={submitting} className="w-full mt-2">
-        {isSupabaseConfigured() ? 'Send Magic Login Link' : 'Secure Login'}
+        Secure Login
       </Button>
     </form>
   );

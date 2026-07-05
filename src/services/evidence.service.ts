@@ -246,7 +246,7 @@ export const evidenceService = {
     }
 
     const { data, error } = await supabase
-      .from('chain_of_custody')
+      .from('custody_logs')
       .insert(logData)
       .select('*')
       .single();
@@ -266,7 +266,7 @@ export const evidenceService = {
     }
 
     const { data, error } = await supabase
-      .from('chain_of_custody')
+      .from('custody_logs')
       .select('*')
       .eq('evidence_id', evidenceId)
       .order('created_at', { ascending: false });

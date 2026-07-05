@@ -6,12 +6,13 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
-import { Mail, User } from 'lucide-react';
+import { Mail, User, Lock } from 'lucide-react';
 import { isSupabaseConfigured } from '@/services/supabase';
 
 const signupSchema = z.object({
   fullName: z.string().min(2, 'Name must be at least 2 characters').max(50, 'Name is too long').regex(/^[a-zA-Z\s]*$/, 'Name can only contain letters and spaces'),
   email: z.string().min(1, 'Email address is required').email('Please enter a valid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
 type SignupFormData = z.infer<typeof signupSchema>;
@@ -33,16 +34,12 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSuccess }) => {
   });
 
   const onSubmit = async (data: SignupFormData) => {
-    const result = await authRegister(data.email, data.fullName);
+    const result = await authRegister(data.email, data.fullName, data.password);
     if (result.error) {
       toast.danger(result.error);
     } else {
-      if (isSupabaseConfigured()) {
-        toast.success('Registration successful! Check email to verify.');
-      } else {
-        toast.success('Successfully registered & logged in (Demo Mode)!');
-        if (onSuccess) onSuccess();
-      }
+      toast.success('Registration successful! Check email to verify (or login instantly).');
+      if (onSuccess) onSuccess();
     }
   };
 
@@ -66,8 +63,17 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSuccess }) => {
         leftIcon={<Mail className="w-4 h-4" />}
         disabled={submitting}
       />
+      <Input
+        type="password"
+        label="Password"
+        placeholder="••••••••"
+        {...register('password')}
+        error={errors.password?.message}
+        leftIcon={<Lock className="w-4 h-4" />}
+        disabled={submitting}
+      />
       <Button type="submit" loading={submitting} className="w-full mt-2">
-        {isSupabaseConfigured() ? 'Register with Magic Link' : 'Secure Register'}
+        Secure Register
       </Button>
     </form>
   );

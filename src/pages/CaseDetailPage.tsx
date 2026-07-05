@@ -117,15 +117,25 @@ export const CaseDetailPage: React.FC = () => {
             Back to Dashboard
           </Button>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleDeleteCase}
-            className="text-danger hover:bg-danger/5"
-            leftIcon={<Trash2 className="w-4 h-4" />}
-          >
-            Delete Case
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setActiveTab('wizard')}
+              leftIcon={<Sparkles className="w-4 h-4" />}
+            >
+              Add Evidence
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDeleteCase}
+              className="text-danger hover:bg-danger/5"
+              leftIcon={<Trash2 className="w-4 h-4" />}
+            >
+              Delete Case
+            </Button>
+          </div>
         </div>
 
         {/* Case Metadata Banner Card */}
@@ -190,6 +200,7 @@ export const CaseDetailPage: React.FC = () => {
                 evidenceList={evidenceList}
                 onView={setSelectedEvidence}
                 onDelete={handleDeleteEvidenceItem}
+                onAddEvidence={() => setActiveTab('wizard')}
               />
             </div>
           )}
