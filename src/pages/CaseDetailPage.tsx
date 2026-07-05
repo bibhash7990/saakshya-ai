@@ -107,7 +107,7 @@ export const CaseDetailPage: React.FC = () => {
     <AppLayout title={currentCase.title}>
       <div className="flex flex-col gap-6 w-full pb-12">
         {/* Back Link & Header */}
-        <div className="flex items-center justify-between w-full select-none">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full select-none gap-4">
           <Button
             variant="ghost"
             size="sm"
@@ -117,7 +117,7 @@ export const CaseDetailPage: React.FC = () => {
             Back to Dashboard
           </Button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button
               variant="primary"
               size="sm"
@@ -175,7 +175,7 @@ export const CaseDetailPage: React.FC = () => {
         </Card>
 
         {/* Tabs */}
-        <div className="flex border-b border-border text-sm font-semibold select-none gap-4">
+        <div className="flex border-b border-border text-sm font-semibold select-none gap-4 overflow-x-auto overflow-y-hidden no-scrollbar pb-1">
           {tabs.map((tab) => (
             <button
               key={tab.id}

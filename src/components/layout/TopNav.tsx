@@ -12,9 +12,15 @@ export const TopNav: React.FC<TopNavProps> = ({ title = 'Dashboard' }) => {
   const online = isSupabaseConfigured();
 
   return (
-    <header className="h-16 border-b border-border bg-bg-primary px-6 flex items-center justify-between sticky top-0 z-30">
+    <header className="h-16 border-b border-border bg-bg-primary px-4 md:px-6 flex items-center justify-between sticky top-0 z-30">
       <div className="flex items-center gap-3">
-        <h2 className="text-lg font-bold tracking-tight text-text-primary capitalize">{title}</h2>
+        {/* Mobile only logo since desktop has it in the sidebar */}
+        <div className="lg:hidden flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center text-white shadow-glow">
+            <ShieldCheck className="w-4 h-4" />
+          </div>
+        </div>
+        <h2 className="text-lg font-bold tracking-tight text-text-primary capitalize hidden sm:block">{title}</h2>
       </div>
 
       <div className="flex items-center gap-4">

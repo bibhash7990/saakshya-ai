@@ -22,7 +22,7 @@ export const DashboardPage: React.FC = () => {
     <AppLayout title="My Case Vaults">
       <div className="flex flex-col gap-8 w-full pb-10">
         {/* Top Header & action */}
-        <div className="flex items-center justify-between w-full">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 sm:gap-0">
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight">Welcome to SaakshyaAI</h1>
             <p className="text-xs font-semibold text-text-secondary mt-1">

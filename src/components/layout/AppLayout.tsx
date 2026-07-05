@@ -18,7 +18,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ title, children }) => {
         <Sidebar />
 
         {/* Right Content Panel */}
-        <div className="flex-1 flex flex-col h-screen overflow-y-auto pb-16 lg:pb-0">
+        <div className="flex-1 flex flex-col h-screen overflow-y-auto pb-24 lg:pb-0">
           {/* Top Bar Navigation */}
           <TopNav title={title} />
 
