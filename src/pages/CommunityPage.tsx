@@ -35,7 +35,7 @@ export const CommunityPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [upvotes, setUpvotes] = useState<Record<string, number>>({});
   const [voted, setVoted] = useState<Record<string, boolean>>({});
-  
+
   const [aiResources, setAiResources] = useState<LegalResource[]>([]);
   const [isSearchingAI, setIsSearchingAI] = useState(false);
 
@@ -117,7 +117,7 @@ export const CommunityPage: React.FC = () => {
       setAiResources([]);
       return;
     }
-    
+
     setIsSearchingAI(true);
     toast.info('Searching globally via AI...');
     try {
@@ -160,7 +160,7 @@ export const CommunityPage: React.FC = () => {
               leftIcon={<Search className="w-4 h-4" />}
               className="flex-1"
             />
-            <Button variant="primary" onClick={handleSearch} isLoading={isSearchingAI}>
+            <Button variant="primary" onClick={handleSearch} loading={isSearchingAI}>
               Search
             </Button>
           </div>
@@ -205,7 +205,7 @@ export const CommunityPage: React.FC = () => {
                     </Badge>
                   </div>
                   <p className="text-xs text-text-secondary leading-relaxed">{res.description}</p>
-                  
+
                   <div className="flex justify-between items-center mt-2 pt-3 border-t border-border/50">
                     {res.phone ? (
                       <a href={`tel:${res.phone}`} className="flex items-center gap-1.5 text-xs text-accent-500 font-bold hover:underline">
@@ -245,11 +245,10 @@ export const CommunityPage: React.FC = () => {
                       </Badge>
                       <button
                         onClick={() => handleUpvote(study.id)}
-                        className={`flex items-center gap-1.5 text-xs font-bold font-mono px-2 py-1 rounded transition cursor-pointer select-none ${
-                          voted[study.id]
-                            ? 'text-primary-400 bg-primary-500/10 border border-primary-500/20'
-                            : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary border border-border'
-                        }`}
+                        className={`flex items-center gap-1.5 text-xs font-bold font-mono px-2 py-1 rounded transition cursor-pointer select-none ${voted[study.id]
+                          ? 'text-primary-400 bg-primary-500/10 border border-primary-500/20'
+                          : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary border border-border'
+                          }`}
                       >
                         <ThumbsUp className="w-3.5 h-3.5" />
                         <span>{totalUpvotes}</span>
@@ -258,7 +257,7 @@ export const CommunityPage: React.FC = () => {
 
                     <h3 className="font-bold text-xs text-text-primary">{study.title}</h3>
                     <p className="text-[11px] text-text-secondary leading-relaxed">{study.summary}</p>
-                    
+
                     <div className="bg-success/5 border border-success/15 rounded-lg p-3 text-[10px] leading-relaxed">
                       <strong className="text-success font-bold flex items-center gap-1">
                         <Info className="w-3.5 h-3.5 flex-shrink-0" /> Outcome:
